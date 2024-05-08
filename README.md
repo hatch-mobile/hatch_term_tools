@@ -10,3 +10,8 @@ chmod +x install_tools.sh
 ```
 
 
+```sh
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/hatch-mobile/hatch_term_tools/main/install_tools.sh)"
+```
+
+

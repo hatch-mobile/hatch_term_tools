@@ -304,6 +304,8 @@ fi
 #
 # 3: Dest dir (where to install the downloaded file)
 #   EX: "$HOME/bin"
+# 
+# 4: (optional) Dry run flag. If present, dry run mode will be used
 function install_tool {
   TOOL_NAME="$1"
   TOOL_SRC_URL="$2"
@@ -315,16 +317,13 @@ function install_tool {
   logdStdErr "    TOOL_SRC_URL: $TOOL_SRC_URL"
   logdStdErr "    TOOL_DEST_DIR: $TOOL_DEST_DIR"
 
-
   command="curl -L \"$TOOL_SRC_URL\" --output \"${TOOL_DEST_DIR}/$TOOL_NAME\""
-  logdStdErr "Would run command: " --yellow --bold "$command" --default
+  logdStdErr "Install command: " --yellow --bold "$command" --default
 
   if ls "${TOOL_DEST_DIR}/$TOOL_NAME" 1> /dev/null; then 
     logStdErr --yellow "$TOOL_NAME" --default " is already installed: " --cyan --underline "${TOOL_DEST_DIR}" --default
   else 
     logStdErr "Installing " --cyan --underline "${TOOL_DEST_DIR}/$TOOL_NAME" --default
-
-    # Install $TOOL_NAME
 
     if [[ -z "$DRY_RUN" ]]; then
       eval "$command"
