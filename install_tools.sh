@@ -261,7 +261,6 @@ logdStdErr "HATCH_TOOLS_DIR: $HATCH_TOOLS_DIR"
 
 # ---- Script main work
 
-# TODO: zakkhoyt - Move these tools to a public repo so no dealing with tokens. 
 # TODO: zakkhoyt - Update text written to .zshrc
 
 mkdir -p "$HATCH_TOOLS_DIR"
@@ -317,15 +316,16 @@ function install_tool {
   logdStdErr "    TOOL_DEST_DIR: $TOOL_DEST_DIR"
 
 
+  command="curl -L \"$TOOL_SRC_URL\" --output \"${TOOL_DEST_DIR}/$TOOL_NAME\""
+  logdStdErr "Would run command: " --yellow --bold "$command" --default
+
   if ls "${TOOL_DEST_DIR}/$TOOL_NAME" 1> /dev/null; then 
     logStdErr --yellow "$TOOL_NAME" --default " is already installed: " --cyan --underline "${TOOL_DEST_DIR}" --default
   else 
     logStdErr "Installing " --cyan --underline "${TOOL_DEST_DIR}/$TOOL_NAME" --default
 
     # Install $TOOL_NAME
-    command="curl -L \"$TOOL_SRC_URL\" --output \"${TOOL_DEST_DIR}/$TOOL_NAME\""
 
-    logdStdErr "command: " --yellow --bold "$command" --default
     if [[ -z "$DRY_RUN" ]]; then
       eval "$command"
 
@@ -339,13 +339,15 @@ function install_tool {
   logdStdErr ""
 }
 
+# TODO: zakkhoyt - Nice2Have: install from local files (not remote curl)
+
 install_tool "echo_ansi.sh" \
-  "https://raw.githubusercontent.com/hatch-mobile/zakk_scripts/main/shell/bin/echo_ansi\?token\=GHSAT0AAAAAACK6UDPM2LKVEQMERIY6U5AUZR323EA" \
+  "https://raw.githubusercontent.com/hatch-mobile/hatch_term_tools/main/tools/echo_ansi.sh" \
   "$HATCH_TOOLS_DIR" \
   "$IS_DRY_RUN"
 
 install_tool "hatch_log.sh" \
-  "https://raw.githubusercontent.com/hatch-mobile/zakk_scripts/main/shell/bin/hatch_log.sh?token=GHSAT0AAAAAACK6UDPMR5G7KTC657DCM34KZR33AZQ" \
+  "https://raw.githubusercontent.com/hatch-mobile/hatch_term_tools/main/tools/hatch_log.sh" \
   "$HATCH_TOOLS_DIR" \
   "$IS_DRY_RUN"
 
