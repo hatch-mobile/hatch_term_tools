@@ -16,8 +16,12 @@ done
 
 # Writes to stdout using echo_ansi if available
 _log_ansi() {
-  if which echo_ansi.sh > /dev/null; then
-    echo_ansi.sh "$@"
+  # if which echo_ansi > /dev/null; then
+  ECHO_ANSI=$(ls $(which echo_ansi))
+  if which echo_ansi > /dev/null; then
+  # if which echo_ansi; then
+    # echo "yep, here"
+    echo_ansi "$@"
   else 
     # echo_ansi isn't available so let's use echo. But first...
     # we must remove all echo_ansi arguments (those that are
@@ -81,27 +85,37 @@ logdStdErr "PWD:         $PWD"
 # Call like so: `print_usage`
 print_usage () {
   SCRIPT_NAME=./$(basename "$0")
-  logStdErr "TODO"
+  logStdErr "Installs hatch command line tools"
   logStdErr ""
   logStdErr "Usage:"
-  logStdErr "    $SCRIPT_NAME <OPTIONS>"
+  logStdErr "    $SCRIPT_NAME [OPTIONS]"
   logStdErr ""
   logStdErr "Mandatory:"
-  logStdErr "    --pull-request-count [int]: The number of items to analyze. Defaults to 1000."
-  logStdErr "    --report-type [stale-branches | pull-requests]: The type of report to produce"
+  logStdErr "    --mode [install|uninstall]: The installation mode"
+  logStdErr "         Default: install"
   logStdErr ""
   logStdErr "Optional:"
-  logStdErr "    --list-authors: List all authors/users as a stanza in the report."
-  logStdErr "    --level=[level]: Specify a level."
+  logStdErr "    --hatch-tools-dir <dir>: The directory to install tools to."
+  logStdErr "         Directory will be created."
+  logStdErr "         Default: ~/bin/hatch"
+  logStdErr "    --dry-run: Print intended commands/actions but don't execute."
+  logStdErr "    --debug: Enables debug logging to stderr."
+  logStdErr "    --help: Prints this message"
   logStdErr ""
   logStdErr "EX:"
+  logStdErr "    Print help"
   logStdErr "    \$ $SCRIPT_NAME --help"
   logStdErr ""
-  logStdErr "    TODO: description"
-  logStdErr "    \$ $SCRIPT_NAME --pull-request-count 100"
+  logStdErr "    Normal installation"
+  logStdErr "    \$ $SCRIPT_NAME"
   logStdErr ""
-  logStdErr "    TODO: description"
-  logStdErr "    \$ $SCRIPT_NAME --pull-request-count 100 --list-authors"
+  logStdErr "    Custom destination"
+  logStdErr "    \$ $SCRIPT_NAME --hatch-tools-dir=\"~/my_fav_dir\""
+  logStdErr ""
+  logStdErr "    Uninstall"
+  logStdErr "    \$ $SCRIPT_NAME" --mode=uninstall
+  logStdErr "    \$ $SCRIPT_NAME --mode=uninstall --hatch-tools-dir=\"~/my_fav_dir\""
+  logStdErr ""
   logStdErr ""
 }
 
@@ -205,12 +219,14 @@ if [[ -n "$(parse_flag_argument "--help" "${@:1}")" ]]; then
 fi
 
 # Ensure our globals are cleared before populating with args
+unset -v MODE
+MODE="install"
 unset -v HATCH_TOOLS_DIR
 unset -v IS_DEBUG
 unset -v IS_DRY_RUN
 
 while [[ $# -gt 0 ]]; do
-  logdStdErr "  Inspecting args[$counter]: ${1}"
+  logdStdErr "  Inspecting args: ${1}"
   case $1 in
     --help|help) 
       logdStdErr "Found flag: $1"
@@ -224,6 +240,23 @@ while [[ $# -gt 0 ]]; do
     --dry-run)
       logdStdErr "Found flag: $1"
       IS_DRY_RUN="$1"
+      ;;
+    --mode*)
+      KEY_VALUE=$(parse_key_value_argument "--mode" "$@")
+      VALUE=$(echo "$KEY_VALUE" | cut -d "," -f 1);
+      TO_SHIFT=$(echo "$KEY_VALUE" | cut -d "," -f 2);
+      logdStdErr "    KEY_VALUE: $KEY_VALUE"
+      logdStdErr "    VALUE: $VALUE"
+      logdStdErr "    TO_SHIFT: $TO_SHIFT"
+      MODE="$VALUE"
+
+      # Validate mode
+      if [[ "$MODE" != "install" && "$MODE" != "install_local" && "$MODE" != "uninstall" ]]; then
+        logdStdErr --red "[ERROR] " --default "Invalid value for MODE: $MODE"
+        print_usage
+        exit 1
+      fi
+      shift "$TO_SHIFT"
       ;;
     --output-dir*)
       KEY_VALUE=$(parse_key_value_argument "--output-dir" "$@")
@@ -257,6 +290,7 @@ fi
 
 logdStdErr "IS_DEBUG: $IS_DEBUG"
 logdStdErr "IS_DRY_RUN: $IS_DRY_RUN"
+logdStdErr "MODE: $MODE"
 logdStdErr "HATCH_TOOLS_DIR: $HATCH_TOOLS_DIR"
 
 # ---- Script main work
@@ -266,38 +300,70 @@ logdStdErr "HATCH_TOOLS_DIR: $HATCH_TOOLS_DIR"
 mkdir -p "$HATCH_TOOLS_DIR"
 pushd "$HATCH_TOOLS_DIR" || exit 1
 
-# Confirm that HATCH_TOOLS_DIR is in PATH
-CONFIRM_PATH=$(echo "$PATH" | grep -o "$HATCH_TOOLS_DIR")
-if [[ "$CONFIRM_PATH" == "$HATCH_TOOLS_DIR" ]]; then 
-  logStdErr --yellow "$HATCH_TOOLS_DIR" --default " is already on " --yellow --bold "PATH" --default
-else 
 
-  # TODO: zakkhoyt - Read .zshrc to see if already exists 
-  CRITICAL_LINE="export PATH=$PATH:\"$HATCH_TOOLS_DIR\""
+function configure_path {
+  logdStdErr "configure_path called ------------------------------------------ "
 
-  # shellcheck disable=SC2002
-  EXISTING_LINE=$(cat "$HOME/.zshrc" | grep -o "$CRITICAL_LINE")
+  RC_HEADER_LINE="# This section added by https://raw.githubusercontent.com/hatch-mobile/hatch_term_tools/main/configure_tools.sh"
+  CRITICAL_LINE="export PATH=$PATH:$HATCH_TOOLS_DIR"
 
-  if [[ "$EXISTING_LINE" != "" ]]; then
-    : #already exists. Tell user to source
-    logStdErr --yellow "$HOME/.zshrc" --default " is already configured." --default
-  else
-    if [[ -n "$DRY_RUN" ]]; then
-      : # Skip cause --dry-run
-    else
-      echo "# This section added by $0" >> "$HOME/.zshrc"
-      echo "$CRITICAL_LINE" >> "$HOME/.zshrc"
-      logStdErr --cyan --underline "$HATCH_TOOLS_DIR" --default " has been added to PATH in " --cyan --underline "$HOME/.zshrc" --default
+
+  if [[ "$MODE" == "uninstall" ]]; then
+    # Delete relevant PATH lines from .zshrc
+    first_line=$(grep -n "$RC_HEADER_LINE" ~/.zshrc | cut -d ":" -f 1 | head -n 1)
+    second_line=$((first_line+1))
+    if [[ "$first_line" == "" || "$second_line" == "" ]]; then
+      logStdErr "Nothing to delete in " --cyan --underline "$HOME/.zshrc" --default
+    else 
+      sed -i '' -e "${first_line},${second_line}d" ~/.zshrc
+      logStdErr "Did delete PATH lines from " --cyan --underline "$HOME/.zshrc" --default
     fi
+    
+    # Refresh PATH
+    logdStdErr "PATH before deleting: $PATH"
+    # shellcheck disable=SC2001
+    PATH=$(echo "$PATH" | sed -e "s|$HATCH_TOOLS_DIR||g")
+    logdStdErr "PATH after deleting: $PATH"
+
+  elif [[ "$MODE" == "install" ]]; then
+    CONFIRM_PATH=$(echo "$PATH" | grep -o "$HATCH_TOOLS_DIR")
+    if [[ "$CONFIRM_PATH" == "$HATCH_TOOLS_DIR" ]]; then 
+      logStdErr --yellow "$HATCH_TOOLS_DIR" --default " is already on " --yellow --bold "PATH" --default
+    else 
+      
+
+      # shellcheck disable=SC2002
+      EXISTING_LINE=$(cat "$HOME/.zshrc" | grep -o "$CRITICAL_LINE")
+
+      if [[ "$EXISTING_LINE" != "" ]]; then
+        : # Already exists in . Tell user to source
+        logStdErr --yellow "$HOME/.zshrc" --default " is already configured." --default
+      else
+        if [[ -n "$IS_DRY_RUN" ]]; then
+          # Skip cause --dry-run
+          logStdErr "[--dry-run] "--cyan --underline "$HATCH_TOOLS_DIR" --default " would have been added to PATH in " --cyan --underline "$HOME/.zshrc" --default
+        else
+          echo "$RC_HEADER_LINE" >> "$HOME/.zshrc"
+          echo "$CRITICAL_LINE" >> "$HOME/.zshrc"
+          logStdErr --cyan --underline "$HATCH_TOOLS_DIR" --default " has been added to PATH in " --cyan --underline "$HOME/.zshrc" --default
+        fi
+      fi
+      logStdErr "To update this terminal session: "
+      logStdErr "    " --yellow --bold "source $HOME/.zshrc" --default
+      logStdErr ""
+    fi
+  elif [[ "$MODE" == "install_local" ]]; then
+    logStdErr "--mode=install_local is not implemented"
+    exit 200
   fi
-  logStdErr "To update this terminal session: "
-  logStdErr "    " --yellow --bold "source $HOME/.zshrc" --default
-  logStdErr ""
-fi
+  # Confirm that HATCH_TOOLS_DIR is in PATH
+}
+
+configure_path 
 
 # Downloads a file, copies it to specified DIR
 # 
-# 1: Tool name: EX: echo_ansi.sh
+# 1: Tool name: EX: echo_ansi
 #
 # 2: Tool source url: Will be downloaded with curl.
 #   EX: https://raw.githubusercontent.com/org/repo/main/my_file
@@ -306,51 +372,75 @@ fi
 #   EX: "$HOME/bin"
 # 
 # 4: (optional) Dry run flag. If present, dry run mode will be used
-function install_tool {
+function configure_tool {
   TOOL_NAME="$1"
   TOOL_SRC_URL="$2"
   TOOL_DEST_DIR="$3"
   IS_DRY_RUN="$4"
+  TOOL_PATH="$TOOL_DEST_DIR/$TOOL_NAME"
 
-  logdStdErr "install_tool called with params:"
+  logdStdErr "configure_tool called with params:"
   logdStdErr "    TOOL_NAME: $TOOL_NAME"
   logdStdErr "    TOOL_SRC_URL: $TOOL_SRC_URL"
   logdStdErr "    TOOL_DEST_DIR: $TOOL_DEST_DIR"
+  logdStdErr "    IS_DRY_RUN: $IS_DRY_RUN"
+  logdStdErr "    TOOL_PATH: $TOOL_PATH"
 
-  command="curl -L \"$TOOL_SRC_URL\" --output \"${TOOL_DEST_DIR}/$TOOL_NAME\""
-  logdStdErr "Install command: " --yellow --bold "$command" --default
+  if [[ -n "$UNINSTALL" ]]; then
+    # Delete the tool
+    rm -f "$TOOL_PATH"
+    logStdErr "Deleted tool: " --cyan --underline "$TOOL_PATH" --default
+    # TODO: zakkhoyt. tell user to refresh env
+  else
+    command="curl -L \"$TOOL_SRC_URL\" --output \"${TOOL_DEST_DIR}/$TOOL_NAME\""
+    logdStdErr "Install command: " --yellow --bold "$command" --default
 
-  if ls "${TOOL_DEST_DIR}/$TOOL_NAME" 1> /dev/null; then 
-    logStdErr --yellow "$TOOL_NAME" --default " is already installed: " --cyan --underline "${TOOL_DEST_DIR}" --default
-  else 
-    logStdErr "Installing " --cyan --underline "${TOOL_DEST_DIR}/$TOOL_NAME" --default
+    if ls "${TOOL_DEST_DIR}/$TOOL_NAME" > /dev/null 2>&1; then 
+      logStdErr --yellow "$TOOL_NAME" --default " is already installed: " --cyan --underline "${TOOL_DEST_DIR}" --default
+    else 
 
-    if [[ -z "$DRY_RUN" ]]; then
-      eval "$command"
+      logdStdErr "Will install " --cyan --underline "${TOOL_DEST_DIR}/$TOOL_NAME" --default
+      if [[ -z "$IS_DRY_RUN" ]]; then
+        eval "$command"
 
-      # Ensure that it's executable
-      chmod +x "${TOOL_DEST_DIR}/$TOOL_NAME"
+        # Ensure that it's executable
+        chmod +x "${TOOL_DEST_DIR}/$TOOL_NAME"
 
-      # TODO: zakkhoyt. Test each tool using which
+        if ls "${TOOL_DEST_DIR}/$TOOL_NAME" > /dev/null 2>&1; then 
+          logStdErr "Did install " --cyan --underline "${TOOL_DEST_DIR}/$TOOL_NAME" --default
+        else 
+          logStdErr --red --bold "[ERROR]" --default ": Failed to install " --cyan --underline "${TOOL_DEST_DIR}/$TOOL_NAME" --default
+        fi
+      else
+        logdStdErr "[--dry-run] Skipped install " --cyan --underline "${TOOL_DEST_DIR}/$TOOL_NAME" --default
+      fi
     fi
-  fi
 
-  logdStdErr ""
+    logdStdErr ""
+  fi
 }
 
 # TODO: zakkhoyt - Nice2Have: install from local files (not remote curl)
 
-install_tool "echo_ansi.sh" \
-  "https://raw.githubusercontent.com/hatch-mobile/hatch_term_tools/main/tools/echo_ansi.sh" \
+# Script versions of these tools 
+configure_tool "echo_ansi" \
+  "https://raw.githubusercontent.com/hatch-mobile/hatch_term_tools/main/tools/echo_ansi" \
   "$HATCH_TOOLS_DIR" \
   "$IS_DRY_RUN"
 
-install_tool "hatch_log.sh" \
+configure_tool "hatch_log.sh" \
   "https://raw.githubusercontent.com/hatch-mobile/hatch_term_tools/main/tools/hatch_log.sh" \
   "$HATCH_TOOLS_DIR" \
   "$IS_DRY_RUN"
 
-logStdErr ""
-logStdErr "Listing ${TOOL_DEST_DIR}"
-ls -al
+# Compiled binary versions of these tools 
+configure_tool "echo_pretty" \
+  "https://raw.githubusercontent.com/hatch-mobile/hatch_term_tools/main/tools/echo_pretty" \
+  "$HATCH_TOOLS_DIR" \
+  "$IS_DRY_RUN"
+
+configure_tool "hatch_log" \
+  "https://raw.githubusercontent.com/hatch-mobile/hatch_term_tools/main/tools/hatch_log" \
+  "$HATCH_TOOLS_DIR" \
+  "$IS_DRY_RUN"
 
