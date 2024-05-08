@@ -2,6 +2,29 @@
 
 # About 
 
+This repo contains a handful of useful shell utilities. Some are shell scripts, some are compiled Swift code ([see HatchTerminal](https://github.com/hatch-mobile/HatchTerminal)).
+
+
+## `echo_pretty`
+Modeled from `echo`, but supports ANSI colors, cursor controls, etc... Compiled [Swift code](https://github.com/hatch-mobile/HatchTerminal/blob/main/Sources/EchoPretty/main.swift). Much faster than `echo_ansi`, but bigger in size.
+
+![](images/echo_pretty.png)
+
+## `echo_ansi`
+Modeled after `echo`, but supports ANSI colors. Written as shell script. 
+
+![](images/echo_ansi.png)
+
+
+
+## `hatch_log`
+A utility for logging from other shell scripts. Compiled [Swift code](https://github.com/hatch-mobile/HatchTerminal/blob/main/Sources/HatchLogApp/main.swift)
+Compiled Swift code.
+
+![](images/hatch_log.png)
+
+
+
 # Installation
 To install shell tools, copy / paste this into your terminal
 
@@ -9,20 +32,17 @@ To install shell tools, copy / paste this into your terminal
 /bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/hatch-mobile/hatch_term_tools/main/install_tools.sh)"
 ```
 
-Then either open a new terminal or reload your environment `source ~/.zshrc`
 
+## Testing your installation
+
+Then either open a new terminal or reload your environment `source ~/.zshrc`
 Test that the tools installed:
 ```sh
 which echo_pretty
-
-
 echo_pretty "This works just like echo does."
-echo_pretty "this works just like echo does." --red --bold "WITH " --italic --YELLOW "COLORS" --default
-echo_pretty "    and even some " --blink "blinking urls" --cyan --underline "https://gist.githubusercontent.com/zakkhoyt/c76a013602afded4b5240e6ca457acb0/raw/8764f97ff6bbdd41ca1d4d8290ac051115c91437/shell%2520script%2520arg%2520parsing" --default
+echo_pretty "This works just like echo does." --red --bold "WITH " --italic --YELLOW "COLORS" --default
+echo_pretty "Even with " --blink "blinking urls" --cyan --underline "https://github.com" --default
 ```
-
-
-
 
 # Uninstall
 
@@ -31,7 +51,7 @@ echo_pretty "    and even some " --blink "blinking urls" --cyan --underline "htt
 ./install_tools.sh --mode=uninstall
 ```
 
-## Manually
+## Manual
 ```sh
 # delete PATH lines from .zshrc
 first_line=$(grep -n "# This section added by /bin/zsh" ~/.zshrc | cut -d ":" -f 1 | head -n 1)

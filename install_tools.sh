@@ -385,8 +385,8 @@ function configure_tool {
   logdStdErr "    IS_DRY_RUN: $IS_DRY_RUN"
   logdStdErr "    TOOL_PATH: $TOOL_PATH"
 
+  # TODO: zakkhoyt - Nice2Have: MODE == "reinstall"
   if [[ "$MODE" == "uninstall" ]]; then
-
     if [[ -n "$IS_DRY_RUN" ]]; then
       logdStdErr "[--dry-run] Would have deleted tool: " --cyan --underline "$TOOL_PATH" --default
     else 
@@ -397,6 +397,8 @@ function configure_tool {
   else
     logdStdErr "Install command: " --yellow --bold "$command" --default
 
+    # TODO: zakkhoyt - Nice2Have: install files from local repo
+    
     # # if local file, copy. Else assume it's a URL and use curl. 
     # if ! [[ -f "$TOOL_PATH" ]]; then
     #   command="cp \"$TOOL_SOURCE\" \"${TOOL_DEST_DIR}/$TOOL_NAME\""
