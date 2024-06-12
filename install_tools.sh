@@ -1,6 +1,9 @@
 #!/bin/bash
 
-# See this code as gist: https://gist.githubusercontent.com/zakkhoyt/c76a013602afded4b5240e6ca457acb0/raw/8764f97ff6bbdd41ca1d4d8290ac051115c91437/shell%2520script%2520arg%2520parsing
+# This script was derived from a gist which provides boilerplate
+# for argument parsing (flags, options, key/value pairs, etc..), 
+# usage/help, printing/logging, and more: 
+# https://gist.github.com/zakkhoyt/c76a013602afded4b5240e6ca457acb0
 
 # ---- Look for our debug argument first thing (other args processed after bootstrapping).
 
@@ -16,11 +19,7 @@ done
 
 # Writes to stdout using echo_pretty if available
 _log_pretty() {
-  # if which echo_pretty > /dev/null; then
-  # ECHO_ANSI=$(ls "$(which echo_pretty)")
   if which echo_pretty > /dev/null; then
-  # if which echo_pretty; then
-    # echo "yep, here"
     echo_pretty "$@"
   else 
     # echo_pretty isn't available so let's use echo. But first...
@@ -44,28 +43,24 @@ _log_pretty() {
 
 # Writes to stdout always
 log() {
-  # echo "$@";
   _log_pretty "$@";
 }
 
 # Writes to stdout if `--debug` param was specified.
 logd() {
   if [[ -n "$IS_DEBUG" ]]; then
-    # log "$@"
     log "$@"
   fi
 }
 
 # Writes to stderr always
 logStdErr() {
-  # echo "$@" 1>&2
   _log_pretty "$@" 1>&2
 }
 
 # Writes to stderr if `--debug` param was specified.
 logdStdErr() {
   if [[ -n "$IS_DEBUG" ]]; then
-    # logStdErr "$@"
     logStdErr "$@"
   fi
 }
@@ -89,10 +84,10 @@ print_usage () {
   logStdErr "    $SCRIPT_NAME [OPTIONS]"
   logStdErr ""
   logStdErr "Mandatory:"
-  logStdErr "    --mode [install|uninstall]: The installation mode"
-  logStdErr "         Default: install"
   logStdErr ""
   logStdErr "Optional:"
+  logStdErr "    --mode [install|uninstall]: The installation mode"
+  logStdErr "         Default: install"
   # logStdErr "    --hatch-tools-dir <dir>: The directory to install tools to."
   # logStdErr "         Directory will be created."
   # logStdErr "         Default: ~/.hatch/bin"
