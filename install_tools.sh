@@ -14,16 +14,16 @@ done
 
 # ---- Set up our logging functions
 
-# Writes to stdout using echo_ansi if available
-_log_ansi() {
-  # if which echo_ansi > /dev/null; then
-  ECHO_ANSI=$(ls $(which echo_ansi))
-  if which echo_ansi > /dev/null; then
-  # if which echo_ansi; then
+# Writes to stdout using echo_pretty if available
+_log_pretty() {
+  # if which echo_pretty > /dev/null; then
+  # ECHO_ANSI=$(ls "$(which echo_pretty)")
+  if which echo_pretty > /dev/null; then
+  # if which echo_pretty; then
     # echo "yep, here"
-    echo_ansi "$@"
+    echo_pretty "$@"
   else 
-    # echo_ansi isn't available so let's use echo. But first...
+    # echo_pretty isn't available so let's use echo. But first...
     # we must remove all echo_ansi arguments (those that are
     # prefexed with a '-').
     args=("$@") 
@@ -45,7 +45,7 @@ _log_ansi() {
 # Writes to stdout always
 log() {
   # echo "$@";
-  _log_ansi "$@";
+  _log_pretty "$@";
 }
 
 # Writes to stdout if `--debug` param was specified.
@@ -59,7 +59,7 @@ logd() {
 # Writes to stderr always
 logStdErr() {
   # echo "$@" 1>&2
-  _log_ansi "$@" 1>&2
+  _log_pretty "$@" 1>&2
 }
 
 # Writes to stderr if `--debug` param was specified.
@@ -260,7 +260,7 @@ while [[ $# -gt 0 ]]; do
       KEY_VALUE=$(parse_key_value_argument "--output-dir" "$@")
       VALUE=$(echo "$KEY_VALUE" | cut -d "," -f 1);
       TO_SHIFT=$(echo "$KEY_VALUE" | cut -d "," -f 2);
-      logdStdErr "    KEY_VALUE: $KEY_VALUE"
+      logdStdErr "    KEY_VALUEg: $KEY_VALUE"
       logdStdErr "    VALUE: $VALUE"
       logdStdErr "    TO_SHIFT: $TO_SHIFT"
       HATCH_TOOLS_DIR=$(realpath "$VALUE")
@@ -417,14 +417,16 @@ function configure_tool {
       else
         eval "$command"
 
+        # set -x
         # Ensure that it's executable
-        chmod +x "${TOOL_DEST_DIR}/$TOOL_NAME"
+        chmod +x "${TOOL_DEST_DIR}/${TOOL_NAME}"
 
-        if ls "${TOOL_DEST_DIR}/$TOOL_NAME" > /dev/null 2>&1; then 
+        if ls "${TOOL_DEST_DIR}/${TOOL_NAME}" > /dev/null 2>&1; then 
           logStdErr "Did install " --cyan --underline "${TOOL_DEST_DIR}/$TOOL_NAME" --default
         else 
           logStdErr --red --bold "[ERROR]" --default ": Failed to install " --cyan --underline "${TOOL_DEST_DIR}/$TOOL_NAME" --default
         fi
+        # set +x
       fi
     fi
 
