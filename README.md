@@ -5,26 +5,6 @@
 This repo contains a handful of useful shell utilities. Some are shell scripts, some are compiled Swift code ([see HatchTerminal](https://github.com/hatch-mobile/HatchTerminal)).
 
 
-## `echo_pretty`
-Modeled from `echo`, but supports ANSI colors, cursor controls, etc... Compiled [Swift code](https://github.com/hatch-mobile/HatchTerminal/blob/main/Sources/EchoPretty/main.swift). Much faster than `echo_ansi`, but bigger in size.
-
-![](images/echo_pretty.png)
-
-## `echo_ansi`
-Modeled after `echo`, but supports ANSI colors. Written as shell script. 
-
-![](images/echo_ansi.png)
-
-
-
-## `hatch_log`
-A utility for logging from other shell scripts. Compiled [Swift code](https://github.com/hatch-mobile/HatchTerminal/blob/main/Sources/HatchLogApp/main.swift)
-Compiled Swift code.
-
-![](images/hatch_log.png)
-
-
-
 # Installation
 To install shell tools, copy / paste this into your terminal
 
@@ -50,6 +30,29 @@ echo_pretty "This works just like echo does."
 echo_pretty "This works just like echo does." --red --bold "WITH " --italic --YELLOW "COLORS" --default
 echo_pretty "Even with " --blink "blinking urls" --cyan --underline "https://github.com" --default
 ```
+
+
+# About the Tools
+
+
+## `echo_pretty`
+Modeled from `echo`, but supports ANSI colors, cursor controls, etc... Compiled [Swift code](https://github.com/hatch-mobile/HatchTerminal/blob/main/Sources/EchoPretty/main.swift). Much faster than `echo_ansi`, but bigger in size.
+
+![](images/echo_pretty.png)
+
+## `echo_ansi`
+Modeled after `echo`, but supports ANSI colors. Written as shell script. Slower than `echo_pretty`. 
+
+![](images/echo_ansi.png)
+
+
+
+## `hatch_log`
+A utility for logging from other shell scripts. Compiled [Swift code](https://github.com/hatch-mobile/HatchTerminal/blob/main/Sources/HatchLogApp/main.swift)
+Compiled Swift code.
+
+![](images/hatch_log.png)
+
 
 # Uninstall
 
