@@ -32,13 +32,20 @@ To install shell tools, copy / paste this into your terminal
 /bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/hatch-mobile/hatch_term_tools/main/install_tools.sh)"
 ```
 
+Refresh your environment
+```sh
+source ~/.zshrc`
+# or restart Terminal.app
+```
 
 ## Testing your installation
 
-Then either open a new terminal or reload your environment `source ~/.zshrc`
-Test that the tools installed:
+Test that the tools and path are installed:
 ```sh
 which echo_pretty
+```
+
+```
 echo_pretty "This works just like echo does."
 echo_pretty "This works just like echo does." --red --bold "WITH " --italic --YELLOW "COLORS" --default
 echo_pretty "Even with " --blink "blinking urls" --cyan --underline "https://github.com" --default
