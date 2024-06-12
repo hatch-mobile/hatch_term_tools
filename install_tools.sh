@@ -93,9 +93,9 @@ print_usage () {
   logStdErr "         Default: install"
   logStdErr ""
   logStdErr "Optional:"
-  logStdErr "    --hatch-tools-dir <dir>: The directory to install tools to."
-  logStdErr "         Directory will be created."
-  logStdErr "         Default: ~/bin/hatch"
+  # logStdErr "    --hatch-tools-dir <dir>: The directory to install tools to."
+  # logStdErr "         Directory will be created."
+  # logStdErr "         Default: ~/.hatch/bin"
   logStdErr "    --dry-run: Print intended commands/actions but don't execute."
   logStdErr "    --debug: Enables debug logging to stderr."
   logStdErr "    --help: Prints this message"
@@ -283,7 +283,7 @@ done
 
 if [[ -z "$HATCH_TOOLS_DIR" ]]; then
   # Fall back to a default
-  HATCH_TOOLS_DIR="$HOME/bin/hatch"
+  HATCH_TOOLS_DIR="$HOME/.hatch/bin"
 fi
 
 logdStdErr "IS_DEBUG: $IS_DEBUG"
