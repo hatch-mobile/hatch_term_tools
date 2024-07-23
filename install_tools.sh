@@ -402,31 +402,31 @@ function configure_tool {
     # fi
     command="curl -L \"$TOOL_SOURCE\" --output \"${TOOL_PATH}\""
 
-    if ls "${TOOL_DEST_DIR}/$TOOL_NAME" > /dev/null 2>&1; then 
-      logStdErr --yellow "$TOOL_NAME" --default " is already installed: " --cyan --underline "${TOOL_DEST_DIR}" --default
-    else 
+    # if ls "${TOOL_DEST_DIR}/$TOOL_NAME" > /dev/null 2>&1; then 
+    #   logStdErr --yellow "$TOOL_NAME" --default " is already installed: " --cyan --underline "${TOOL_DEST_DIR}" --default
+    # else 
 
-      logdStdErr "Will install " --cyan --underline "${TOOL_DEST_DIR}/$TOOL_NAME" --default
-      if [[ -n "$IS_DRY_RUN" ]]; then
-        logdStdErr "[--dry-run] Skipped install " --cyan --underline "${TOOL_DEST_DIR}/$TOOL_NAME" --default
-      else
-        eval "$command"
+    logdStdErr "Will install " --cyan --underline "${TOOL_DEST_DIR}/$TOOL_NAME" --default
+    if [[ -n "$IS_DRY_RUN" ]]; then
+      logdStdErr "[--dry-run] Skipped install " --cyan --underline "${TOOL_DEST_DIR}/$TOOL_NAME" --default
+    else
+      eval "$command"
 
-        # set -x
-        # Ensure that it's executable
-        chmod +x "${TOOL_DEST_DIR}/${TOOL_NAME}"
+      # set -x
+      # Ensure that it's executable
+      chmod +x "${TOOL_DEST_DIR}/${TOOL_NAME}"
 
-        if ls "${TOOL_DEST_DIR}/${TOOL_NAME}" > /dev/null 2>&1; then 
-          logStdErr "Did install " --cyan --underline "${TOOL_DEST_DIR}/$TOOL_NAME" --default
-        else 
-          logStdErr --red --bold "[ERROR]" --default ": Failed to install " --cyan --underline "${TOOL_DEST_DIR}/$TOOL_NAME" --default
-        fi
-        # set +x
+      if ls "${TOOL_DEST_DIR}/${TOOL_NAME}" > /dev/null 2>&1; then 
+        logStdErr "Did install " --cyan --underline "${TOOL_DEST_DIR}/$TOOL_NAME" --default
+      else 
+        logStdErr --red --bold "[ERROR]" --default ": Failed to install " --cyan --underline "${TOOL_DEST_DIR}/$TOOL_NAME" --default
       fi
+      # set +x
     fi
-
-    logdStdErr ""
   fi
+
+  logdStdErr ""
+  # fi
 }
 
 configure_tool "echo_ansi" \
