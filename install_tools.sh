@@ -449,4 +449,9 @@ configure_tool "hatch_log" \
   "$HATCH_TOOLS_DIR" \
   "$IS_DRY_RUN" 
 
+configure_tool "zing" \
+  "https://raw.githubusercontent.com/hatch-mobile/hatch_term_tools/main/tools/zing" \
+  "$HATCH_TOOLS_DIR" \
+  "$IS_DRY_RUN" 
+
 configure_path 
