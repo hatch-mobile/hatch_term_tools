@@ -34,6 +34,29 @@ echo_pretty "Even with " --blink "blinking urls" --cyan --underline "https://git
 
 # About the Tools
 
+## `zing`
+A tool to assist in creating new `HatchModules`: 
+* Creates boilerplate folders, files
+* Updates `Package.swift` with new module. 
+* Adds default `DocC` folder, files
+* Generates starting Swift files/code. `Live.swift`, `Interface.swift`, etc...
+* Adds starting `unit`, `integration`, and `UI` tests
+* Supports `--dry-run` (like a preview)
+
+Show help for the `create` subcommand
+```sh
+zing create --help
+```
+
+### Example
+```sh
+# Try creating a new client named "HatchExampleClient"
+zing create \
+--name "HatchExampleClient" \
+--package-dir "$HATCH_SLEEP_REPO/HatchModules" \
+--dry-run
+```
+
 
 ## `echo_pretty`
 Modeled from `echo`, but supports ANSI colors, cursor controls, etc... Compiled [Swift code](https://github.com/hatch-mobile/HatchTerminal/blob/main/Sources/EchoPretty/main.swift). Much faster than `echo_ansi`, but bigger in size.
