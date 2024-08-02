@@ -5,6 +5,17 @@
 # usage/help, printing/logging, and more: 
 # https://gist.github.com/zakkhoyt/c76a013602afded4b5240e6ca457acb0
 
+# TODO: zakkhoyt - Support config dir, 
+# HATCH_TOOLS_DIR=root dir, not root/bin
+# rename HATCH_TOOLS_DIR -> HATCH_BIN_DIR
+#
+# HATCH_BIN_DIR="${HATCH_TOOLS_DIR}/bin"
+# HATCH_CONFIG_DIR="${HATCH_TOOLS_DIR}/config"
+# HATCH_SCRIPT_DIR="${HATCH_TOOLS_DIR}/script"
+#
+# [ ] Test
+
+
 # ---- Look for our debug argument first thing (other args processed after bootstrapping).
 
 unset -v IS_DEBUG
@@ -255,7 +266,7 @@ while [[ $# -gt 0 ]]; do
       KEY_VALUE=$(parse_key_value_argument "--output-dir" "$@")
       VALUE=$(echo "$KEY_VALUE" | cut -d "," -f 1);
       TO_SHIFT=$(echo "$KEY_VALUE" | cut -d "," -f 2);
-      logdStdErr "    KEY_VALUEg: $KEY_VALUE"
+      logdStdErr "    KEY_VALUE: $KEY_VALUE"
       logdStdErr "    VALUE: $VALUE"
       logdStdErr "    TO_SHIFT: $TO_SHIFT"
       HATCH_TOOLS_DIR=$(realpath "$VALUE")
@@ -278,18 +289,29 @@ done
 
 if [[ -z "$HATCH_TOOLS_DIR" ]]; then
   # Fall back to a default
-  HATCH_TOOLS_DIR="$HOME/.hatch/bin"
+  HATCH_TOOLS_DIR="$HOME/.hatch"
 fi
+
+HATCH_BIN_DIR="${HATCH_TOOLS_DIR}/bin"
+HATCH_CONFIG_DIR="${HATCH_TOOLS_DIR}/config"
+HATCH_SCRIPT_DIR="${HATCH_TOOLS_DIR}/script"
 
 logdStdErr "IS_DEBUG: $IS_DEBUG"
 logdStdErr "IS_DRY_RUN: $IS_DRY_RUN"
 logdStdErr "MODE: $MODE"
 logdStdErr "HATCH_TOOLS_DIR: $HATCH_TOOLS_DIR"
+logdStdErr "HATCH_BIN_DIR: $HATCH_BIN_DIR"
+logdStdErr "HATCH_CONFIG_DIR: $HATCH_CONFIG_DIR"
+logdStdErr "HATCH_SCRIPT_DIR: $HATCH_SCRIPT_DIR"
 
 # ---- Script main work
 
 mkdir -p "$HATCH_TOOLS_DIR"
-pushd "$HATCH_TOOLS_DIR" || exit 1
+mkdir -p "$HATCH_BIN_DIR"
+mkdir -p "$HATCH_CONFIG_DIR"
+mkdir -p "$HATCH_SCRIPT_DIR"
+
+pushd "$HATCH_BIN_DIR" || exit 1
 
 function refresh_environment {
   # Use echo here w/ansi codes vs calling echo_ansi to cover all cases (installed or not)
@@ -302,7 +324,7 @@ function configure_path {
   logdStdErr "configure_path called ------------------------------------------ "
 
   RC_HEADER_LINE="# This section added by https://raw.githubusercontent.com/hatch-mobile/hatch_term_tools/main/configure_tools.sh"
-  CRITICAL_LINE="export PATH=$PATH:$HATCH_TOOLS_DIR"
+  CRITICAL_LINE="export PATH=$PATH:$HATCH_BIN_DIR"
 
   if [[ "$MODE" == "uninstall" ]]; then
     # Delete relevant PATH lines from .zshrc
@@ -323,15 +345,15 @@ function configure_path {
     # Refresh PATH
     logdStdErr "PATH before deleting: $PATH"
     # shellcheck disable=SC2001
-    PATH=$(echo "$PATH" | sed -e "s|$HATCH_TOOLS_DIR||g")
+    PATH=$(echo "$PATH" | sed -e "s|$HATCH_BIN_DIR||g")
     logdStdErr "PATH after deleting: $PATH"
 
     refresh_environment
 
   elif [[ "$MODE" == "install" ]]; then
-    CONFIRM_PATH=$(echo "$PATH" | grep -o "$HATCH_TOOLS_DIR")
-    if [[ "$CONFIRM_PATH" == "$HATCH_TOOLS_DIR" ]]; then 
-      logStdErr --yellow "$HATCH_TOOLS_DIR" --default " is already on " --yellow --bold "PATH" --default
+    CONFIRM_PATH=$(echo "$PATH" | grep -o "$HATCH_BIN_DIR")
+    if [[ "$CONFIRM_PATH" == "$HATCH_BIN_DIR" ]]; then 
+      logStdErr --yellow "$HATCH_BIN_DIR" --default " is already on " --yellow --bold "PATH" --default
     else 
       # shellcheck disable=SC2002
       EXISTING_LINE=$(cat "$HOME/.zshrc" | grep -o "$CRITICAL_LINE")
@@ -342,11 +364,11 @@ function configure_path {
       else
         if [[ -n "$IS_DRY_RUN" ]]; then
           # Skip cause --dry-run
-          logStdErr "[--dry-run] "--cyan --underline "$HATCH_TOOLS_DIR" --default " would have been added to PATH in " --cyan --underline "$HOME/.zshrc" --default
+          logStdErr "[--dry-run] "--cyan --underline "$HATCH_BIN_DIR" --default " would have been added to PATH in " --cyan --underline "$HOME/.zshrc" --default
         else
           echo "$RC_HEADER_LINE" >> "$HOME/.zshrc"
           echo "$CRITICAL_LINE" >> "$HOME/.zshrc"
-          logStdErr --cyan --underline "$HATCH_TOOLS_DIR" --default " has been added to PATH in " --cyan --underline "$HOME/.zshrc" --default
+          logStdErr --cyan --underline "$HATCH_BIN_DIR" --default " has been added to PATH in " --cyan --underline "$HOME/.zshrc" --default
         fi
       fi
       
@@ -431,27 +453,27 @@ function configure_tool {
 
 configure_tool "echo_ansi" \
   "https://raw.githubusercontent.com/hatch-mobile/hatch_term_tools/main/tools/echo_ansi" \
-  "$HATCH_TOOLS_DIR" \
+  "$HATCH_BIN_DIR" \
   "$IS_DRY_RUN"
 
 configure_tool "hatch_log.sh" \
   "https://raw.githubusercontent.com/hatch-mobile/hatch_term_tools/main/tools/hatch_log.sh" \
-  "$HATCH_TOOLS_DIR" \
+  "$HATCH_BIN_DIR" \
   "$IS_DRY_RUN" 
 
 configure_tool "echo_pretty" \
   "https://raw.githubusercontent.com/hatch-mobile/hatch_term_tools/main/tools/echo_pretty" \
-  "$HATCH_TOOLS_DIR" \
+  "$HATCH_BIN_DIR" \
   "$IS_DRY_RUN" 
 
 configure_tool "hatch_log" \
   "https://raw.githubusercontent.com/hatch-mobile/hatch_term_tools/main/tools/hatch_log" \
-  "$HATCH_TOOLS_DIR" \
+  "$HATCH_BIN_DIR" \
   "$IS_DRY_RUN" 
 
 configure_tool "zing" \
   "https://raw.githubusercontent.com/hatch-mobile/hatch_term_tools/main/tools/zing" \
-  "$HATCH_TOOLS_DIR" \
+  "$HATCH_BIN_DIR" \
   "$IS_DRY_RUN" 
 
 configure_path 
