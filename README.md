@@ -22,13 +22,13 @@ source ~/.zshrc`
 
 Test that the tools and path are installed:
 ```sh
-which echo_pretty
+which zing
+# ~/.hatch/bin/zing
 ```
 
-```
-echo_pretty "This works just like echo does."
-echo_pretty "This works just like echo does." --red --bold "WITH " --italic --YELLOW "COLORS" --default
-echo_pretty "Even with " --blink "blinking urls" --cyan --underline "https://github.com" --default
+```sh
+zing --version
+# 2.0.3
 ```
 
 
@@ -73,6 +73,14 @@ zing create \
 
 
 ## `echo_pretty`
+
+
+```
+echo_pretty "This works just like echo does."
+echo_pretty "This works just like echo does." --red --bold "WITH " --italic --YELLOW "COLORS" --default
+echo_pretty "Even with " --blink "blinking urls" --cyan --underline "https://github.com" --default
+```
+
 Modeled from `echo`, but supports ANSI colors, cursor controls, etc... Compiled [Swift code](https://github.com/hatch-mobile/HatchTerminal/blob/main/Sources/EchoPretty/main.swift). Much faster than `echo_ansi`, but bigger in size.
 
 ![](images/echo_pretty.png)
@@ -82,14 +90,11 @@ Modeled after `echo`, but supports ANSI colors. Written as shell script. Slower 
 
 ![](images/echo_ansi.png)
 
-
-
 ## `hatch_log`
 A utility for logging from other shell scripts. Compiled [Swift code](https://github.com/hatch-mobile/HatchTerminal/blob/main/Sources/HatchLogApp/main.swift)
 Compiled Swift code.
 
 ![](images/hatch_log.png)
-
 
 # Uninstall
 
