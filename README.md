@@ -57,25 +57,19 @@ zing create \
 --dry-run
 ```
 
-`git status`
+### Generated Files
+
+#### Here is what a `git status` might look like:
+
 <img src="images/zing_git_status.png" width="50%">
 
-`git diff --staged`
+#### Updates `Package.swift`
+
 <img src="images/zing_git_diff_package.png" width="50%">
 
-`git diff --staged`
+#### And here is some of the generated starting code
+
 <img src="images/zing_git_diff.png" width="50%">
-
-`git status`
-![images/zing_git_status.png](images/zing_git_status.png)
-
-`git diff --staged`
-![images/zing_git_diff_package.png](images/zing_git_diff_package.png)
-
-`git diff --staged`
-![images/zing_git_diff.png](images/zing_git_diff.png)
-
-
 
 
 ## `echo_pretty`
