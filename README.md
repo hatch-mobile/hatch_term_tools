@@ -57,6 +57,26 @@ zing create \
 --dry-run
 ```
 
+`git status`
+<img src="images/zing_git_status.png" width="50%">
+
+`git diff --staged`
+<img src="images/zing_git_diff_package.png" width="50%">
+
+`git diff --staged`
+<img src="images/zing_git_diff.png" width="50%">
+
+`git status`
+![images/zing_git_status.png](images/zing_git_status.png)
+
+`git diff --staged`
+![images/zing_git_diff_package.png](images/zing_git_diff_package.png)
+
+`git diff --staged`
+![images/zing_git_diff.png](images/zing_git_diff.png)
+
+
+
 
 ## `echo_pretty`
 Modeled from `echo`, but supports ANSI colors, cursor controls, etc... Compiled [Swift code](https://github.com/hatch-mobile/HatchTerminal/blob/main/Sources/EchoPretty/main.swift). Much faster than `echo_ansi`, but bigger in size.
