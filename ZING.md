@@ -1,19 +1,25 @@
+
 # About
 
-<!-- TODO: zakkhoyt - what is zing? -->
+* [ ] What is HatchModules
+* [ ] What is Zing?
+  * [ ] Why v2?
+
+
 
 
 # Installation 
 
-There are two way to install `zing`. 
+There are two way to install `zing`: 
+* Installer (pre-compiled)
+* From Source
 
 
 ## Pre-compiled
 
-[Hatch Terminal Tools(https://github.com/hatch-mobile/hatch_term_tools)] contains a set of pre-compiled shell utilities. 
-
-Copy / paste this into your terminal
+To install compiled binaries, paste this into your terminal. 
 ```sh
+# Downloads the `Hatch Terminal Tools` and installs them under `~/.hatch/bin`.
 /bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/hatch-mobile/hatch_term_tools/main/install_tools.sh)"
 ```
 
@@ -23,10 +29,39 @@ Refresh your environment
 source ~/.zshrc`
 ```
 
-## Compile Swift Source
+Verify your install
+```sh
+zing  --version
+# 2.0.2
+```
 
-The binaries in Hatch Terminal Tools are compiled Swift code. If you wish to compile, modify, or read the source code it is located in a separate repository [HatchTerminal](https://github.com/hatch-mobile/HatchTerminal). `README` is a good place to start. 
+## Compile from Source
 
+If you wish to compile/install yourself, see [HatchTerminal](https://github.com/hatch-mobile/HatchTerminal). 
 
-# Zing
+# Usage
 
+## Help and Subcommands
+
+Show help and subcommands
+```sh
+zing --help
+```
+
+Show help for the `create` subcommand
+```sh
+zing create --help
+```
+
+## Creating a Module
+```sh
+# Try creating a package
+zing create \
+--name "HatchExampleClient" \
+--package-dir "/Users/zakkhoyt/code/repositories/hatch/hatch_sleep/2/HatchModules" \
+--debug --dry-run
+```
+
+# References
+* [HatchTerminal](https://github.com/hatch-mobile/HatchTerminal): Shell utilities written in Swift (including Zing v2)
+* [HatchTermTools](https://github.com/hatch-mobile/hatch_term_tools): Pre-compiled binaries (from HatchTerminal) and installer.
