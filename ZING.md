@@ -66,36 +66,64 @@ Suppose we use `zing` to create a new module named `HatchExampleClient`.
 
 ## Creating a Module
 
-Try creating a package using `--dry-run`. 
+### Dry Run
+Try creating a package using `--dry-run`. This will print would-be content, but not actually write files. 
 ```sh
-# Will print would-be content, but not actually write files
 zing create \
 --name "HatchExampleClient" \
 --package-dir "$NIGHTLIGHT_REPO/HatchModules" \
 --dry-run
 ```
 
+### Wet Run (? is that the inverse?)
+
 Or go for it (you're using `git` after all)
 
 ```sh
-# Will print would-be content, but not actually write files
 zing create \
 --name "HatchExampleClient" \
 --package-dir "$NIGHTLIGHT_REPO/HatchModules"
 ```
 
-#### Here is what a `git status` might look like
+## Output file/directories
+
+Zing lets you know what it's doing on the command line. Here is a sample from our example:
+
+<img src="images/zing_stdout.png" width="75%">
+
+<details><summary>Details</summary>
+<p>
+
+html
+<img src="images/zing_stdout.png" width="75%">
+
+full
+![images/zing_stdout.png](images/zing_stdout.png)
+
+</p>
+</details> 
+
+Looking at it with `git status`:
 
 <img src="images/zing_git_status.png" width="75%">
 
-#### Updates `Package.swift`
+## Generated Content
 
-<img src="images/zing_git_diff_package.png" width="75%">
+#### Adds the new module to `Package.swift`
 
-#### And here is some of the generated starting code
+<img src="images/zing_diff_package.png" width="75%">
 
-<img src="images/zing_git_diff.png" width="75%">
+#### Generates some starter `Client` code
 
+<img src="images/zing_diff_client.png" width="75%">
+
+#### Generates a `UnifiedLogger.swift` configured for your module
+
+<img src="images/zing_diff_unified_logger.png" width="75%">
+
+#### Generates a `DocC` folders, landing page, and basic dependency graph
+
+<img src="images/zing_diff_unified_logger.png" width="75%">
 
 # Installation 
 
