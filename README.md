@@ -61,15 +61,15 @@ zing create \
 
 #### Here is what a `git status` might look like:
 
-<img src="images/zing_git_status.png" width="50%">
+<img src="images/zing_git_status.png" width="75%">
 
 #### Updates `Package.swift`
 
-<img src="images/zing_git_diff_package.png" width="50%">
+<img src="images/zing_git_diff_package.png" width="75%">
 
 #### And here is some of the generated starting code
 
-<img src="images/zing_git_diff.png" width="50%">
+<img src="images/zing_git_diff.png" width="75%">
 
 
 ## `echo_pretty`
