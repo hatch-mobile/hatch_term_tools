@@ -35,13 +35,15 @@ zing --version
 # About the Tools
 
 ## `zing`
-A tool to assist in creating new `HatchModules`: 
+A CLI tool to assist in creating new `HatchModules`: 
 * Creates boilerplate folders, files
 * Updates `Package.swift` with new module. 
 * Adds default `DocC` folder, files
+* Adds `UnifiedLogger.swift` (a standardized wrapper for `os.Logger`)
 * Generates starting Swift files/code. `Live.swift`, `Interface.swift`, etc...
 * Adds starting `unit`, `integration`, and `UI` tests
 * Supports `--dry-run` (like a preview)
+* Written in `Swift`, easy to modify
 
 Show help for the `create` subcommand
 ```sh

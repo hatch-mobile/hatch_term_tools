@@ -5,6 +5,7 @@
 * Creates boilerplate folders, files
 * Updates `Package.swift` with new module. 
 * Adds default `DocC` folder, files
+* Adds `UnifiedLogger.swift` (a standardized wrapper for `os.Logger`)
 * Generates starting Swift files/code. `Live.swift`, `Interface.swift`, etc...
 * Adds starting `unit`, `integration`, and `UI` tests
 * Supports `--dry-run` (like a preview)
@@ -96,8 +97,6 @@ zing create \
 <img src="images/zing_git_diff.png" width="75%">
 
 
-
-
 # Installation 
 
 There are two way to install `zing`: 
@@ -119,7 +118,7 @@ source ~/.zshrc`
 Verify your install
 ```sh
 zing  --version
-# 2.0.2
+# 2.0.3
 ```
 
 ## Compile from Source
