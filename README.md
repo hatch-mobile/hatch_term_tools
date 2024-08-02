@@ -48,29 +48,7 @@ Show help for the `create` subcommand
 zing create --help
 ```
 
-### Example
-```sh
-# Try creating a new client named "HatchExampleClient"
-zing create \
---name "HatchExampleClient" \
---package-dir "$HATCH_SLEEP_REPO/HatchModules" \
---dry-run
-```
-
-### Generated Files
-
-#### Here is what a `git status` might look like:
-
-<img src="images/zing_git_status.png" width="75%">
-
-#### Updates `Package.swift`
-
-<img src="images/zing_git_diff_package.png" width="75%">
-
-#### And here is some of the generated starting code
-
-<img src="images/zing_git_diff.png" width="75%">
-
+To learn more, see [ZING.md](ZING.md)
 
 ## `echo_pretty`
 
