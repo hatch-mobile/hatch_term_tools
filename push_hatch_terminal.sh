@@ -319,6 +319,11 @@ logdStdErr "HATCH_SCRIPT_DIR: $HATCH_SCRIPT_DIR"
 logdStdErr "SPECIFIC_TOOL: $SPECIFIC_TOOL"
 
 
+
+# shellcheck disable=SC2164
+pushd "$SCRIPT_DIR"
+logdStdErr "pwd: $PWD"
+
 if [[ -n "$SPECIFIC_TOOL" ]]; then
   cp "../HatchTerminal/.build/release/$SPECIFIC_TOOL" "./tools"
 else 
@@ -332,6 +337,13 @@ if [[ -z "$IS_DRY_RUN" ]]; then
   git commit -m "backing up latest tools"
   git push
 fi
+
+
+
+# shellcheck disable=SC2164
+popd "$SCRIPT_DIR"
+logdStdErr "pwd: $PWD"
+
 
 # # ---- Script main work
 
