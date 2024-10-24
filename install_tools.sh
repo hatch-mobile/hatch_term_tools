@@ -324,7 +324,7 @@ function configure_path {
   logdStdErr "configure_path called ------------------------------------------ "
 
   RC_HEADER_LINE="# This section added by https://raw.githubusercontent.com/hatch-mobile/hatch_term_tools/main/configure_tools.sh"
-  CRITICAL_LINE="export PATH=$PATH:$HATCH_BIN_DIR"
+  CRITICAL_LINE="export PATH=\$PATH:$HATCH_BIN_DIR"
 
   if [[ "$MODE" == "uninstall" ]]; then
     # Delete relevant PATH lines from .zshrc
