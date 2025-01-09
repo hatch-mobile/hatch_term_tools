@@ -103,3 +103,19 @@ source ~/.zshrc
 HATCH_TOOLS_DIR="$HOME/bin/hatch"
 rm -rf "$HATCH_TOOLS_DIR"
 ```
+
+# Updating the tools
+
+Copies compiled binaries from `../HatchTerminal/.build/release` to `./tools`. Is useful when paired with `HatchTerminal/scripts/install.sh`. EX:
+
+## From hatch_term_tools (this repo)
+```sh
+# Compiles all binaries in HatchTerminal, then copies them into hatch_term_tools/tools before finally comitting/pushing
+../HatchTerminal/scripts/install.sh; ./push_hatch_terminal.sh
+```
+
+## From HatchTerminal repo
+```sh
+# Compiles all binaries in HatchTerminal, then copies them into hatch_term_tools/tools before finally comitting/pushing
+./scripts/install.sh; ../hatch_term_tools/push_hatch_terminal.sh
+```

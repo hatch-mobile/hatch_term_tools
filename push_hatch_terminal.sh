@@ -1,5 +1,19 @@
 #!/bin/bash
 
+# Copies compiled binaries from `../HatchTerminal/.build/release` to `./tools`
+# 
+# Useful when paired with `HatchTerminal/scripts/install.sh`. EX:
+# 
+# # From hatch_term_tools
+# ```sh
+# ../HatchTerminal/scripts/install.sh; ./push_hatch_terminal.sh
+# ```
+# 
+# # From HatchTerminal
+# ```sh
+# ./scripts/install.sh; ../hatch_term_tools/push_hatch_terminal.sh
+# ```
+
 # This script was derived from a gist which provides boilerplate
 # for argument parsing (flags, options, key/value pairs, etc..), 
 # usage/help, printing/logging, and more: 
