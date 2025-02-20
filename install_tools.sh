@@ -289,7 +289,8 @@ done
 
 if [[ -z "$HATCH_TOOLS_DIR" ]]; then
   # Fall back to a default
-  HATCH_TOOLS_DIR="$HOME/.hatch"
+  # shellcheck disable=SC2016
+  HATCH_TOOLS_DIR='$HOME/.hatch'
 fi
 
 HATCH_BIN_DIR="${HATCH_TOOLS_DIR}/bin"
@@ -324,7 +325,10 @@ function configure_path {
   logdStdErr "configure_path called ------------------------------------------ "
 
   RC_HEADER_LINE="# This section added by https://raw.githubusercontent.com/hatch-mobile/hatch_term_tools/main/configure_tools.sh"
-  CRITICAL_LINE="export PATH=\$PATH:$HATCH_BIN_DIR"
+
+  # shellcheck disable=SC2116
+  # shellcheck disable=SC2016
+  CRITICAL_LINE="export PATH=$(echo '$PATH'):$HATCH_BIN_DIR"
 
   if [[ "$MODE" == "uninstall" ]]; then
     # Delete relevant PATH lines from .zshrc

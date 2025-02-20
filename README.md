@@ -95,12 +95,12 @@ sed -i '' -e "${first_line},${second_line}d" ~/.zshrc
 
 # Reload env/path
 echo "before: $PATH"
-export PATH=$(echo "$PATH" | sed -e "s|$HATCH_TOOLS_DIR||g")
+export PATH=$(echo "\$PATH" | sed -e "s|$HATCH_TOOLS_DIR||g")
 echo "after: $PATH"
 source ~/.zshrc
 
 # delete hatch tools dir
-HATCH_TOOLS_DIR="$HOME/bin/hatch"
+HATCH_TOOLS_DIR='$HOME/bin/hatch'
 rm -rf "$HATCH_TOOLS_DIR"
 ```
 
