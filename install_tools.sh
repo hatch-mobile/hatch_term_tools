@@ -290,7 +290,7 @@ done
 if [[ -z "$HATCH_TOOLS_DIR" ]]; then
   # Fall back to a default
   # shellcheck disable=SC2016
-  HATCH_TOOLS_DIR='$HOME/.hatch'
+  HATCH_TOOLS_DIR="$HOME/.hatch"
 fi
 
 HATCH_BIN_DIR="${HATCH_TOOLS_DIR}/bin"
