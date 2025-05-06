@@ -324,7 +324,7 @@ function refresh_environment {
 function configure_path {
   logdStdErr "configure_path called ------------------------------------------ "
 
-  RC_HEADER_LINE="# This section added by https://raw.githubusercontent.com/hatch-mobile/hatch_term_tools/main/configure_tools.sh"
+  RC_HEADER_LINE="# This section added by https://github.com/hatch-mobile/hatch_term_tools/blob/main/install_tools.sh"
 
   # shellcheck disable=SC2116
   # shellcheck disable=SC2016
