@@ -104,18 +104,31 @@ HATCH_TOOLS_DIR='$HOME/bin/hatch'
 rm -rf "$HATCH_TOOLS_DIR"
 ```
 
-# Updating the tools
+---
 
-Copies compiled binaries from `../HatchTerminal/.build/release` to `./tools`. Is useful when paired with `HatchTerminal/scripts/install.sh`. EX:
+# Development of the Tools and Deployment
 
-## From hatch_term_tools (this repo)
+* The source code for the tools themselves resides in [hatch-mobile/HatchTerminal](https://github.com/hatch-mobile/HatchTerminal)
+* The compiled tools are commmited in this repository which is used as an installer [hatch-mobile/hatch_term_tools](https://github.com/hatch-mobile/hatch_term_tools)
+
+
+* Compiles all binaries in `HatchTerminal` repo. 
+* Copies tools from build dir into hatch_term_tools/tools before finally comitting/pushing
+
+
+## From `hatch_term_tools` (this repo)
 ```sh
-# Compiles all binaries in HatchTerminal, then copies them into hatch_term_tools/tools before finally comitting/pushing
-../HatchTerminal/scripts/install.sh; ./push_hatch_terminal.sh
+# Compiles all binaries in `HatchTerminal` repo. 
+../HatchTerminal/scripts/install.sh 
+# Copies tools from `HatchTerminal` build dir into `hatch_term_tools/tools` before finally comitting/pushing
+./push_hatch_terminal.sh
 ```
 
-## From HatchTerminal repo
+## From `HatchTerminal` (sibling repo)
 ```sh
-# Compiles all binaries in HatchTerminal, then copies them into hatch_term_tools/tools before finally comitting/pushing
-./scripts/install.sh; ../hatch_term_tools/push_hatch_terminal.sh
+# Compiles all binaries in 'HatchTerminal' repo. 
+./scripts/install.sh; 
+# Copies tools from 'HatchTerminal' build dir into `hatch_term_tools/tools` before finally comitting/pushing
+../hatch_term_tools/push_hatch_terminal.sh
 ```
+
