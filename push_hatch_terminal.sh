@@ -289,13 +289,40 @@ logdStdErr "SPECIFIC_TOOL: $SPECIFIC_TOOL"
 pushd "$SCRIPT_DIR"
 logdStdErr "pwd: $PWD"
 
+
+
 if [[ -n "$SPECIFIC_TOOL" ]]; then
-  cp "../HatchTerminal/.build/release/$SPECIFIC_TOOL" "./tools"
+  
+  tools=(
+    "../HatchTerminal/.build/release/$SPECIFIC_TOOL" "./tools"
+  )
 else 
-  cp "../HatchTerminal/.build/release/echo_pretty" "./tools"
-  cp "../HatchTerminal/.build/release/zing" "./tools"
-  cp "../HatchTerminal/.build/release/hatch_log" "./tools"
+  tools=(
+    "../HatchTerminal/.build/release/echo_pretty" "./tools"
+    "../HatchTerminal/.build/release/zing" "./tools"
+    "../HatchTerminal/.build/release/hatch_log" "./tools"
+  )
 fi
+
+# if [[ -n "$SPECIFIC_TOOL" ]]; then
+#   cp "../HatchTerminal/.build/release/$SPECIFIC_TOOL" "./tools"
+# else 
+#   cp "../HatchTerminal/.build/release/echo_pretty" "./tools"
+#   cp "../HatchTerminal/.build/release/zing" "./tools"
+#   cp "../HatchTerminal/.build/release/hatch_log" "./tools"
+# fi
+
+set -e
+
+for tool in "${tools[@]}"; do
+  if cp "$tool" "./tools"; then
+    logdStdErr "  Copied: $tool"
+  else 
+    logdStdErr --red "[ERROR] " --default "Failed to copy: $tool"
+    exit 1
+  fi
+done
+
 
 if [[ -z "$IS_DRY_RUN" ]]; then 
   git add tools/
@@ -303,7 +330,10 @@ if [[ -z "$IS_DRY_RUN" ]]; then
   git push
 fi
 
-
+for tool in "${tools[@]}"; do
+  version=$("$tool" --version 2>/dev/null || echo "n/a")
+  log --green "[SUCCESS] Uploaded $tool version: $version"
+done
 
 # shellcheck disable=SC2164
 popd "$SCRIPT_DIR"
